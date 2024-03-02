@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-b&+__5-zc9%lo86t8ms0x$f*9l6fm-l&m2-sxn)*4eddry5upy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost','127.0.0.1','flashproc.ess.washington.edu']
 
 
 # Application definition
@@ -127,9 +127,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+#STATIC_URL = '/static/'
+STATIC_URL = '/storms-test/static/' ### POTENTIAL FIX: For initial apache config
 
-STATIC_ROOT = file_io.create_path(BASE_DIR,'static')
+STATIC_ROOT = file_io.create_path(BASE_DIR,'static/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

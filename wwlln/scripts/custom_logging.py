@@ -1,4 +1,7 @@
 import logging
+from wwlln.settings import BASE_DIR
+from os import chmod
+import stat,sys
 
 """
 TODO
@@ -32,7 +35,7 @@ class CustomLogger:
         self.printLevel : int = _printLevel
         self.printToConsole : bool = _printToConsole
         self.printToFile : bool = _printToFile
-        self.logFilePath : str = "./wwlln/logs/" + _logFileName
+        self.logFilePath : str = str(BASE_DIR)+"/wwlln/logs/" + _logFileName
         self.logTime : bool = _logTime
         
         if self.printToFile:
@@ -56,6 +59,10 @@ class CustomLogger:
                     datefmt='[%d/%b/%Y %H:%M:%S]',
                     filename=self.logFilePath,
                     filemode='w')
+        try:
+            chmod(self.logFilePath, (stat.S_IREAD|stat.S_IWRITE|stat.S_IRGRP|stat.S_IWGRP|stat.S_IROTH))
+        except PermissionError as e:
+            print(e)
         handler = logging.handlers.TimedRotatingFileHandler(self.logFilePath, when='H', interval=1, backupCount=23)
         logging.getLogger('').addHandler(handler)
 
