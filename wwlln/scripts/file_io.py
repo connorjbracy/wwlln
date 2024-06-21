@@ -5,7 +5,7 @@ from shutil import rmtree, copy
 import shutil
 from datetime import datetime, timezone
 
-ROOT_PATH = Path.cwd()
+
 
 def create_file(filename,path='',is_text=False,Data=None, absolute=False):
     if not absolute:
@@ -92,3 +92,5 @@ def get_parent(path, absolute=False):
     if isinstance(path,Path):
         return path.parent
     return Path(path).parent
+
+ROOT_PATH = create_path('/','wd3','storms','wwlln')
