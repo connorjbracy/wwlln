@@ -1,4 +1,12 @@
+__pycache__/
+*.pyc
+
 wwlln/credentials.py
+# This '.wwlln' variant was preserved as it was pre-existing and it's unkown if the 'wwlln' subdir was ever
+# stored as a dot/hidden directory.
+.wwlln/credentials.py
+*venv/
+
 wwlln/logs/*
 wwlln-venv/
 **/data/
