@@ -1,2 +1,6 @@
+wwlln/credentials.py
 .wwlln/credentials.py
 *venv/
+
+__pycache__/
+*.pyc
