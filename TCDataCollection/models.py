@@ -46,6 +46,12 @@ class Resource(models.Model):
             formatted_path = self.local_path.format(Storm=storm, Mission=mission, Sensor=sensor, Year=date_time.year, Month=date_time.month, Day=date_time.day)
             formatted_filename = self.filename.format(Storm=storm, Mission=mission, Sensor=sensor, Year=date_time.year, Month=date_time.month, Day=date_time.day)
             filename_pat = re.compile(formatted_filename)
+            print('is_local           = {}'.format(is_local))
+            print('full_remote        = {}'.format(full_remote))
+            print('formatted_remote   = {}'.format(formatted_remote))
+            print('formatted_path     = {}'.format(formatted_path))
+            print('formatted_filename = {}'.format(formatted_filename))
+            print('filename_pat       = {}'.format(filename_pat))
             
             list_dir = None
             if is_local:
