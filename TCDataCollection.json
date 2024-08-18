@@ -1,0 +1,75 @@
+[
+{
+  "model": "TCDataCollection.source",
+  "pk": 1,
+  "fields": {
+    "name": "navy",
+    "url_path": "https://www.nrlmry.navy.mil/TC/tc20{Storm.season_number:02}/{Storm.region}/{Storm.region}{Storm.storm_number:02}20{Storm.season_number:02}",
+    "username": null,
+    "password": null,
+    "description": "U.S. Naval Research Laboratory generic storm data URL.",
+    "is_local": false
+  }
+},
+{
+  "model": "TCDataCollection.source",
+  "pk": 2,
+  "fields": {
+    "name": "nasa",
+    "url_path": "arthurhourhttps.pps.eosdis.nasa.gov",
+    "username": "jnt@uw.edu",
+    "password": "jnt@uw.edu",
+    "description": "NASA raw sensor data source of GPM, SSMIS, and TMI.",
+    "is_local": false
+  }
+},
+{
+  "model": "TCDataCollection.source",
+  "pk": 3,
+  "fields": {
+    "name": "AEFilesEXT",
+    "url_path": "lightning",
+    "username": null,
+    "password": null,
+    "description": "Local Lightning files stored on the network.",
+    "is_local": true
+  }
+},
+{
+  "model": "TCDataCollection.resource",
+  "pk": 1,
+  "fields": {
+    "source": 1,
+    "name": "trackfile",
+    "path": "txt",
+    "filename": "trackfile.txt",
+    "description": "file containing a storm's track",
+    "local_path": "TCDataCollection/data/{Storm.season_number}/{Storm.region}/{Storm.storm_number}"
+  }
+},
+{
+  "model": "TCDataCollection.resource",
+  "pk": 2,
+  "fields": {
+    "source": 2,
+    "name": "1C HDF5 File",
+    "path": "gpmdata/{Year}/{Month}/{Day}/1C",
+    "filename": "(?i)1C\\.(?:{mission}|{sensor})\\.(?:{mission}|{sensor})\\.XCAL2016-.\\.\\d{{8}}-S\\d{{6}}-E\\d{{6}}.*\\.HDF5",
+    "description": "1c hdf5 sensor data file from nasa",
+    "local_path": "TCDataCollection/data/gpmdata/{year}/{month}/{day}/1C/{mission}/{sensor}"
+  }
+},
+{
+  "model": "TCDataCollection.resource",
+  "pk": 3,
+  "fields": {
+    "source": 3,
+    "name": "AEFiles",
+    "path": "AEFiles",
+    "filename": "AE{Year}{Month}{Day}.loc",
+    "description": "Local AE Lightning files.",
+    "local_path": "TCDataCollection/data/AEFiles"
+  }
+}
+]
+

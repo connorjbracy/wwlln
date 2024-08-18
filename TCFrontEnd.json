@@ -1,0 +1,75 @@
+[
+{
+  "model": "TCFrontEnd.product",
+  "pk": 1,
+  "fields": {
+    "name": "lightning_histograms",
+    "title": "Lightning Histogram Plot",
+    "description": "Three plots are created. The first is of wind speed, pressure, and a histogram of the number of lightning strokes per hour for the lightning within 1000 km of the storm center. The second is the same, but only for lightning within 100 km of the storm center. The third plot is a spectrogram showing the number of lightning strokes per three hours binned by the radial distance from the storm center.",
+    "path": "lightning_histograms",
+    "_is_public": true,
+    "pipeline": null
+  }
+},
+{
+  "model": "TCFrontEnd.product",
+  "pk": 2,
+  "fields": {
+    "name": "density_plot",
+    "title": "Lightning Density Plot",
+    "description": "Plots of daily lightning density relative to center of the storm. Daily plots are combined into an animated GIF.",
+    "path": "lightning_density_plots",
+    "_is_public": true,
+    "pipeline": null
+  }
+},
+{
+  "model": "TCFrontEnd.product",
+  "pk": 3,
+  "fields": {
+    "name": "track_map",
+    "title": "Storm Track Map",
+    "description": "Track of storm center from the Naval Research Lab.",
+    "path": "track_map",
+    "_is_public": true,
+    "pipeline": null
+  }
+},
+{
+  "model": "TCFrontEnd.product",
+  "pk": 4,
+  "fields": {
+    "name": "GMI_sat_overlay_legacy",
+    "title": "GMI 89 GHz PCT Satellite Overaly (Legacy)",
+    "description": "Satellite iamges from the Naval Research Lab are overlaid with lightning strokes (shown as black circles) +/- 15 minutes of satellite image time. There may be no figures available to view if no satellite images are avialable",
+    "path": "GMI_sat_overlay_legacy",
+    "_is_public": true,
+    "pipeline": null
+  }
+},
+{
+  "model": "TCFrontEnd.product",
+  "pk": 5,
+  "fields": {
+    "name": "SSMIS_sat_overlay_legacy",
+    "title": "SSMIS 91 GHz PCT Satellite Overlay (Legacy)",
+    "description": "Satellite images from the Naval Research Lab are overlaid with lightning strokes (shown as black circles) +/- 15 minutes of satellite image time. There may be no figures available to view if no satellite images are available.",
+    "path": "SSMIS_sat_overlay_legacy",
+    "_is_public": true,
+    "pipeline": null
+  }
+},
+{
+  "model": "TCFrontEnd.product",
+  "pk": 6,
+  "fields": {
+    "name": "TMI_sat_overlay_legacy",
+    "title": "TMI 85 GHz PCT Satellite Overlay",
+    "description": "Satellite images from the Naval Research Lab are overlaid with lightning strokes (shown as black circles) +/- 15 minutes of satellite image time. There may be no figures available to view if no satellite images are avaiable.",
+    "path": "TMI_sat_overlay_legacy",
+    "_is_public": true,
+    "pipeline": null
+  }
+}
+]
+
