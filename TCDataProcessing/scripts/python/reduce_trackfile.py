@@ -7,6 +7,7 @@ import sys
 
 from storm.models import StormTrack
 
+from wwlln.scripts.custom_logging import wwlln_logger
 
 # Take the track records that were put into the StormTrack table for the given
 # storm and put them into a trackfile so that we have a trackfile with only the
@@ -14,7 +15,7 @@ from storm.models import StormTrack
 def create_reduced_trackfile(storm, trackfile_path):
     if (storm.stormtrack_set.count() == 0):
         return
-    print('Creating trackfile for: {}'.format(storm))
+    wwlln_logger.info('Creating trackfile for: {}'.format(storm))
     #file_io.safe_create_directory(storage_path)
     #trackfile_filename = settings.PATHS.get_storm_trackfile_filename(storm)
     #trackfile_path = os.path.join(storage_path, trackfile_filename)
@@ -31,7 +32,7 @@ def create_reduced_trackfile(storm, trackfile_path):
                                           TPress    = track.pressure,
                                           TWind     = track.wind_speed))
     except IOError:
-        print('Failed to create/open: "{}"'.format(trackfile_path))
+        wwlln_logger.error('Failed to create/open: "{}"'.format(trackfile_path)))
 
 
 if (__name__ == '__main__'):
@@ -59,7 +60,7 @@ if (__name__ == '__main__'):
     except:
         error_type    = sys.exc_info()[0]
         error_message = sys.exc_info()[1]
-        print('Unpredicted Error({}): {}'.format(error_type, error_message))
+        wwlln_logger.error('Unpredicted Error({}): {}'.format(error_type, error_message)))
         error = 'Unexpected Error({}): "{}"'.format(error_type, error_message)
         globals__['success'] = False
         globals__['error']   = error

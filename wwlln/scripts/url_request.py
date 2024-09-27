@@ -1,21 +1,22 @@
+from wwlln.scripts.custom_logging import wwlln_logger
 # Test various request types:
 #r_dir = ureq.request_url_contents(url_navy_dir)
 #r_txt = ureq.request_url_contents(url_navy_txt)
 #r_img = ureq.request_url_contents(url_navy_img)
 #r_404 = ureq.request_url_contents(url_navy_404)
-#  print('  apparent_encoding:    {}'.format(r.apparent_encoding))
-#  print('  encoding:         {}'.format(r.encoding))
-#  print('  headers:        {}'.format(r.headers))
-#  print('  is_permanent_redirect:  {}'.format(r.is_permanent_redirect))
-#  print('  is_redirect:      {}'.format(r.is_redirect))
-#  print('  json:           {}'.format(r.json))
-#  print('  links:          {}'.format(r.links))
-#  print('  ok:           {}'.format(r.ok))
-#  print('  raise_for_status:     {}'.format(r.raise_for_status))
-#  print('  raw:          {}'.format(r.raw))
-#  print('  reason:         {}'.format(r.reason))
-#  print('  request:        {}'.format(r.request))
-#  print('  status_code:      {}'.format(r.status_code))
+#  wwlln_logger.debug('  apparent_encoding:    {}'.format(r.apparent_encoding))
+#  wwlln_logger.debug('  encoding:         {}'.format(r.encoding))
+#  wwlln_logger.debug('  headers:        {}'.format(r.headers))
+#  wwlln_logger.debug('  is_permanent_redirect:  {}'.format(r.is_permanent_redirect))
+#  wwlln_logger.debug('  is_redirect:      {}'.format(r.is_redirect))
+#  wwlln_logger.debug('  json:           {}'.format(r.json))
+#  wwlln_logger.debug('  links:          {}'.format(r.links))
+#  wwlln_logger.debug('  ok:           {}'.format(r.ok))
+#  wwlln_logger.debug('  raise_for_status:     {}'.format(r.raise_for_status))
+#  wwlln_logger.debug('  raw:          {}'.format(r.raw))
+#  wwlln_logger.debug('  reason:         {}'.format(r.reason))
+#  wwlln_logger.debug('  request:        {}'.format(r.request))
+#  wwlln_logger.debug('  status_code:      {}'.format(r.status_code))
 
 import requests
 #import urllib.request
@@ -88,17 +89,24 @@ def request_list_dir(*args, **kwargs):
   contents = request_url_contents(*args, **kwargs)
   if (not contents):
     return None
-  last_modified = last_modified_pattern.findall(contents)
-  for i in range(len(last_modified)):
-    dt = last_modified[i]
-    date_time_parse_string = ''
-    for j in range(len(date_time_re_patterns)):
-      if(re.compile(date_time_re_patterns[j]).match(dt)):
-        date_time_parse_string = date_time_parse_patterns[j]
-        last_modified[i] = datetime.datetime.strptime(dt,date_time_parse_string)
-  return ({'dirs': re.findall(href_pattern,contents),
-      'last_modified': last_modified
-      })
+  #return href_pattern.findall(contents)
+  #return ({'dirs': [href_match['txt'] for href_match in href_pattern.findall(contents)], 
+  #return ({'dirs': [href_match[1] for href_match in href_pattern.findall(contents)], 
+  #         'last_modified': datetime.datetime.now()})
+  dirs          = [href_match[1] for href_match in href_pattern.findall(contents)]
+  last_modified = (len(dirs) * [datetime.datetime.now()])
+  return {'dirs': dirs, 'last_modified': last_modified}
+  #last_modified = last_modified_pattern.findall(contents)
+  #for i in range(len(last_modified)):
+  #  dt = last_modified[i]
+  #  date_time_parse_string = ''
+  #  for j in range(len(date_time_re_patterns)):
+  #    if(re.compile(date_time_re_patterns[j]).match(dt)):
+  #      date_time_parse_string = date_time_parse_patterns[j]
+  #      last_modified[i] = datetime.datetime.strptime(dt,date_time_parse_string)
+  #return ({'dirs': re.findall(href_pattern,contents),
+  #    'last_modified': last_modified
+  #    })
 
 def createURL(*urls):
   urls=list(urls)

@@ -7,6 +7,8 @@ import re
 
 from django.conf import settings
 
+from wwlln.scripts.custom_logging import wwlln_logger
+
 
 PASSTIME_FORMAT_STR = '{}/{}/{}\t{}:{}:00\n'
 
@@ -36,6 +38,7 @@ def extract_passtimes(storm,
             for temp_input_instances_list in input_instances_lists:
                 #Debug('temp_input_instances_list({})'.format(temp_input_instances_list),
                 #      print_to_stdout = True)
+                wwlln_logger.debug('temp_input_instances_list({})'.format(temp_input_instances_list))
                 if (storage_path == temp_input_instances_list.path):
                     input_instances_list = temp_input_instances_list
                     break
@@ -48,12 +51,15 @@ def extract_passtimes(storm,
 
             for (mission, sensors) in mission_sensor_map.items():
                 #Debug('Mission({})'.format(mission), print_to_stdout = True)
+                wwlln_logger.info('Mission({})'.format(mission))
                 for sensor in sensors:
                     #Debug('Sensor({})'.format(sensor), print_to_stdout = True)
+                    wwlln_logger.info('Sensor({})'.format(sensor)
                     sat_passtimes = []
                     image_filename_regex = sat_image_filename_regex(mission, sensor)
                     for sat_image_filename in input_instances_list.files:
                         #Debug('sat_image_filename({})'.format(sat_image_filename), print_to_stdout = True)
+                        wwlln_logger.info('sat_image_filename({})'.format(sat_image_filename))
                         regex_matches = re.findall(re.compile(image_filename_regex), sat_image_filename)
                         if (len(regex_matches) > 0):
                             regex_match = regex_matches[0]
@@ -72,7 +78,7 @@ def extract_passtimes(storm,
                             sensor_file.write(PASSTIME_FORMAT_STR.format(*passtime))
 
     except IOError:
-        print('Failed to create/open: "{}"'.format(sensor_filename))
+        wwlln_logger.error('Failed to create/open: "{}"'.format(sensor_filename))
         return False
 
     #passtimes_filename = os.path.join(input_dir, passtimes_filename)
@@ -174,19 +180,19 @@ if (__name__ == '__main__'):
         globals__['success'] = success
 
     except KeyError as error:
-        print('KeyError: {}'.format(error))
+        wwlln_logger.error('KeyError: {}'.format(error))
         error = 'Undefined required GLOBAL variable "{}"'.format(error)
         globals__['success'] = False
         globals__['error']   = error
     except NameError as error:
-        print('NameError: {}'.format(error),)
+        wwlln_logger.error('NameError: {}'.format(error))
         error ='Undefined required LOCAL variable "{}"'.format(error)
         globals__['success'] = False
         globals__['error']   = error
     except:
         error_type    = sys.exc_info()[0]
         error_message = sys.exc_info()[1]
-        print('Unpredicted Error({}): {}'.format(error_type, error_message))
+        wwlln_logger.error('Unpredicted Error({}): {}'.format(error_type, error_message))
         error = 'Unexpected Error({}): "{}"'.format(error_type, error_message)
         globals__['success'] = False
         globals__['error']   = error

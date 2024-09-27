@@ -34,7 +34,7 @@ trackfile_navy_path      = urllib.parse.urljoin(navy_root, trackfile_path_rel_pa
 #    try:
 #        pages[url] = url_request.request_url_contents(url)
 #    except ConnectionError as e:
-#        print(e)
+#        wwlln_logger.error(e)
 #url = urls[0]
 #links = url_request.request_url_links(url)
 #

@@ -41,7 +41,6 @@ def view_storm_group(request, season_num, region = None):
 
 
     wwlln_logger.info("Requesting to view a storm group with query: {Query_str}".format(Query_str=query))
-    # print(query, file = sys.stderr)
 
     season_list = Storm.get_season_range()
     region_list = _REGIONS_NEW

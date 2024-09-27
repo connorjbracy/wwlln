@@ -6,6 +6,7 @@ from django.conf import settings
 
 from backend.debug import Debug
 from script.utilities import ScriptError, ScriptParameterName
+from wwlln.scripts.custom_logging import wwlln_logger
 
 
 ################################################################################
@@ -90,8 +91,7 @@ if (__name__ == '__main__'):
     except:
         error_type    = sys.exc_info()[0]
         error_message = sys.exc_info()[1]
-        Debug('Unpredicted Error({}): {}'
-              .format(error_type, error_message), print_to_stdout = True)
+        wwlln_logger.error('Unpredicted Error({}): {}'.format(error_type, error_message))
         error = ScriptError('Unexpected Error({}): "{}"'.format(error_type,
                                                                 error_message))
         globals__[ScriptParameterName.success] = False

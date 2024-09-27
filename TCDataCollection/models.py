@@ -46,12 +46,12 @@ class Resource(models.Model):
       formatted_path = self.local_path.format(Storm=storm, Mission=mission, Sensor=sensor, Year=date_time.year, Month=date_time.month, Day=date_time.day)
       formatted_filename = self.filename.format(Storm=storm, Mission=mission, Sensor=sensor, Year=date_time.year, Month=date_time.month, Day=date_time.day)
       filename_pat = re.compile(formatted_filename)
-      print('is_local           = {}'.format(is_local))
-      print('full_remote        = {}'.format(full_remote))
-      print('formatted_remote   = {}'.format(formatted_remote))
-      print('formatted_path     = {}'.format(formatted_path))
-      print('formatted_filename = {}'.format(formatted_filename))
-      print('filename_pat       = {}'.format(filename_pat))
+      wwlln_logger.debug('is_local           = {}'.format(is_local))
+      wwlln_logger.debug('full_remote        = {}'.format(full_remote))
+      wwlln_logger.debug('formatted_remote   = {}'.format(formatted_remote))
+      wwlln_logger.debug('formatted_path     = {}'.format(formatted_path))
+      wwlln_logger.debug('formatted_filename = {}'.format(formatted_filename))
+      wwlln_logger.debug('filename_pat       = {}'.format(filename_pat))
       
       list_dir = None
       if is_local:
@@ -60,20 +60,20 @@ class Resource(models.Model):
         list_dir = url_request.request_list_dir(formatted_remote,
                                                 self.source.username,
                                                 self.source.password)
-      print('list_dir = {}'.format(list_dir))
+      wwlln_logger.debug('list_dir = {}'.format(list_dir))
       if list_dir:
         resource_list = list_dir['dirs']
         last_modified = list_dir['last_modified']
         file_results=[]
                        
         for i in range(len(resource_list)):
-          print('Processing resource list #{} of {}'.format(i, len(resource_list)))
+          wwlln_logger.info('Processing resource list #{} of {}'.format(i, len(resource_list)))
           if re.match(filename_pat,str(resource_list[i])):
             file_results.append({'file':resource_list[i],'last_modified':last_modified[i]})
         
         for file in file_results:
-          print('File: "{}"'.format(file))
-          print('(local) Last Modified: "{}"'.format(file_io.get_last_modified_datetime(file['file'],formatted_path)))
+          wwlln_logger.debug('File: "{}"'.format(file))
+          wwlln_logger.debug('(local) Last Modified: "{}"'.format(file_io.get_last_modified_datetime(file['file'],formatted_path)))
           if file['last_modified']>file_io.get_last_modified_datetime(file['file'],formatted_path):
             if is_local:
               file_io.copy_file(file['file'],destination_path=formatted_path)
@@ -85,14 +85,12 @@ class Resource(models.Model):
               file_io.create_directory(formatted_path)
               file_io.create_file(file['file'],formatted_path,Data=file_data)
               wwlln_logger.info('successfully retrieved {filename}. new file located at {path}'.format(filename = file['file'],path = formatted_path))
-              #print('successfully retrieved {filename}. new file located at {path}'
+              #wwlln_logger.info('successfully retrieved {filename}. new file located at {path}'
               #    .format(filename = file['file'],path = formatted_path))
       return file_io.create_path(formatted_path)
     except urllib.error.URLError as e:
       wwlln_logger.critical('URLError Occured: {}'.format(e))
-      #print('URLError Occured: {}'.format(e))
       return False
     except OSError as e:
       wwlln_logger.critical('OSError Occured: {}'.format(e))
-      #print('OSError Occured: {}'.format(e))
       return False

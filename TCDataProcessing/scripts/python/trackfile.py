@@ -3,6 +3,9 @@ import wwlln.scripts.file_io as file_io
 import re
 from operator import attrgetter
 
+from wwlln.scripts.custom_logging import wwlln_logger
+
+
 class TrackEntry:
     def __init__(self, 
                 id = 'NNE',
@@ -81,7 +84,7 @@ class TrackFile:
                                             '\s+(\d+\.\d+)(\w)\s+(\w+)\s+(\d+)\s+(\d+)')
                     track_records = re.findall(navy_trackfile_re, track_records.read())
             except IOError:
-                print('Failed to create/open: "{}"'.format(path))
+                wwlln_logger.error('Failed to create/open: "{}"'.format(path)))
                 return False
             #end file input
             for track in track_records:
@@ -122,7 +125,7 @@ class TrackFile:
                                           TWind     = track.wind))
             return self
         except IOError:
-            print('Failed to create/open: "{}"'.format(output_path))
+            wwlln_logger.error('Failed to create/open: "{}"'.format(output_path)))
     
     def get_start_date(self):
         return min(self.tracks, key=attrgetter('time')).time

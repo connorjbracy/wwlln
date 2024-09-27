@@ -2,6 +2,7 @@ import os
 import re
 import sys
 
+import wwlln.scripts.custom_logging as wwlln_logger
 import wwlln.scripts.file_io as file_io
 
 from django import template
@@ -98,9 +99,9 @@ def product_panel(storm, product):
     product_dir = product.get_full_storage_path(storm)
     NO_DISPLAY = { 'has_images': False }
     # Make sure the directory exists.
-    print(file_io.ROOT_PATH)
-    print(product_dir)
-    print(os.path.isdir(product_dir))
+    wwlln_logger.info('file_io.ROOT_PATH = {}'.format(file_io.ROOT_PATH))
+    wwlln_logger.info('product_dir = {}'.format(product_dir))
+    wwlln_logger.info('os.path.isdir(product_dir) = {}'.format(os.path.isdir(product_dir)))
     if (os.path.isdir(product_dir)):
         ## Compile the pattern to look for GIF images.
         #gif_pattern = re.compile(r'.*\.gif')
@@ -197,7 +198,7 @@ def product_carousel(storm, product):
         if ((len(gifs) == 0) and (len(images) == 0)):
             return NO_DISPLAY
         for i in images:
-            print(i, file=sys.stderr)
+            wwlln_logger.info(i)
         # Pass the image info to the template fragment to be rendered and
         # returned to the calling template.
         return { 'has_images': True,

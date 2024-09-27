@@ -10,6 +10,8 @@ from script.utilities import ScriptParameterName, ScriptError
 
 from django.conf import settings
 
+from wwlln.scripts.custom_logging import wwlln_logger
+
 
 ## Updates the track records for the given storm.
 #def validate_extract_passtimes(storm_filename_prefix, storage_dir, mission_sensor_map):
@@ -57,17 +59,20 @@ def validate_extract_passtimes(storm,
     output_filename_pattern = output_filename_pattern.replace('.*', '{}').replace(r'\.', '.')
 
     #####Debug('for sat_resource in product_passtimes.resources:', print_to_stdout = True)
+    wwlln_logger.debug('for sat_resource in product_passtimes.resources:')
     # Get a list of all the satellite images used to generate the passtimes.
     sat_images = []
     for sat_resource in product_passtimes.resources.all():
         sat_images += sat_resource.get_storage_instances_list(storm = storm)
 
     #####Debug('for (mission, sensors) in mission_sensor_map.items():', print_to_stdout = True)
+    wwlln_logger.debug('for (mission, sensors) in mission_sensor_map.items():')
     passtime_format_str = extract_passtimes_script.PASSTIME_FORMAT_STR
     # Create a list to track all sensors whose data is not found.
     not_found_satellites = []
     for (mission, sensors) in mission_sensor_map.items():
         #####Debug('for sensor in sensors:', print_to_stdout = True)
+        wwlln_logger.debug('for sensor in sensors:')
         for sensor in sensors:
             miss_sens_passtime_file = output_filename_pattern.format(mission, sensor)
             if (miss_sens_passtime_file not in passtime_files):
@@ -82,6 +87,7 @@ def validate_extract_passtimes(storm,
                 sat_image_passtimes_pattern = extract_passtimes_script.sat_image_filename_regex(mission, sensor)
                 # Iterate through the satellite images for the given storm.
                 #####Debug('for sat_image in sat_images:', print_to_stdout = True)
+                wwlln_logger.debug('for sat_image in sat_images:')
                 for sat_image in sat_images:
                     # Attempt to find the passtime for the current image,
                     # succeeding if the image is from the current mission-sensor.
@@ -136,17 +142,17 @@ if (__name__ == '__main__'):
         globals__[ScriptParameterName.success] = success
 
     except ScriptError as error:
-        Debug('ScriptError: {}'.format(error), print_to_stdout = True)
+        wwlln_logger.error('ScriptError: {}'.format(error))
         globals__[ScriptParameterName.success] = False
         globals__[ScriptParameterName.error]   = error
     except KeyError as error:
-        Debug('KeyError: {}'.format(error), print_to_stdout = True)
+        wwlln_logger.error('KeyError: {}'.format(error))
         error = ScriptError('Undefined required GLOBAL variable "{}"'
                             .format(error))
         globals__[ScriptParameterName.success] = False
         globals__[ScriptParameterName.error]   = error
     except NameError as error:
-        Debug('NameError: {}'.format(error), print_to_stdout = True)
+        wwlln_logger.error('NameError: {}'.format(error))
         error = ScriptError('Undefined required LOCAL variable "{}"'
                             .format(error))
         globals__[ScriptParameterName.success] = False
@@ -154,7 +160,7 @@ if (__name__ == '__main__'):
     except:
         error_type    = sys.exc_info()[0]
         error_message = sys.exc_info()[1]
-        Debug('Unpredicted Error({}): {}'.format(error_type, error_message), print_to_stdout = True)
+        wwlln_logger.error('Unpredicted Error({}): {}'.format(error_type, error_message))
         error = ScriptError('Unexpected Error({}): "{}"'.format(error_type, error_message))
         globals__[ScriptParameterName.success] = False
         globals__[ScriptParameterName.error]   = error

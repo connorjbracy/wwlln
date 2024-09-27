@@ -9,15 +9,17 @@ from backend.debug import Debug, DebugFunctionArgs
 from script.utilities import ScriptError, ScriptParameterName
 from storm.models import StormTrack
 
+from wwlln.scripts.custom_logging import wwlln_logger
+
 
 # Updates the track records for the given storm.
 def validate_record_storm_tracks(storm, trackfile_filename):
     DebugFunctionArgs(print_to_stdout = False)
     if (not os.path.isfile(trackfile_filename)):
-        Debug('Could not find trackfile: {}'.format(trackfile_filename), print_to_stdout = True)
+        wwlln_logger.error('Could not find trackfile: {}'.format(trackfile_filename))
         return False
     with open(trackfile_filename, 'rt') as track_records:
-        Debug('Successfully opened the trackfile', print_to_stdout = False)
+        wwlln_logger.info('Successfully opened the trackfile')
         # Extract each record of this storm from the track file.
         # [ 0] NNE -> N = zero padded storm number, E = extra ID character?
         # [ 1] Name
@@ -36,7 +38,7 @@ def validate_record_storm_tracks(storm, trackfile_filename):
         tracks = regex.find_all('(\d{2}.)\s+(\w+(?:-\w+)?)\s+(\d{2})(\d{2})(\d{2})\s+(\d{2})'
                                 '(\d{2})\s+(\d+\.\d+)(\w)\s+(\d+\.\d+)(\w)\s+(\w+)\s+(\d+)\s+(\d+)',
                                 track_records.read())
-    Debug('Finished reading the trackfile', print_to_stdout = False)
+    wwlln_logger.info('Finished reading the trackfile')
     date_start   = timezone.now().date()
     date_end     = datetime.date(year = 1, month = 1, day = 1)
     storm_tracks = storm.stormtrack_set.all()
@@ -88,8 +90,7 @@ def validate_record_storm_tracks(storm, trackfile_filename):
                                     longitude  = test_track.longitude,
                                     wind_speed = test_track.wind_speed,
                                     pressure   = test_track.pressure).exists()):
-            Debug('Found a track in the trackfile that isn\'t in the database',
-                  print_to_stdout = False)
+            wwlln_logger.info('Found a track in the trackfile that isn\'t in the database')
             raise ScriptError('For Storm "{Storm}", found track in file '
                               '"{File}" with data: '
                               'Time({Track.time}) | '
@@ -100,16 +101,11 @@ def validate_record_storm_tracks(storm, trackfile_filename):
                               'that did not have a corresponding entry in the '
                               'StormTrack database'
                               .format(Storm = storm, File = trackfile_filename, Track = test_track))
-    Debug('All tracks in the trackfile were entered into the StormTrack database.',
-          print_to_stdout = False)
+    wwlln_logger.info('All tracks in the trackfile were entered into the StormTrack database.')
 
     success = ((storm.date_start == date_start) and (storm.date_end == date_end))
 
-    Debug('Storm date range saved in Storm database: {} - {}\n'
-          'Storm date range detected during testing: {} - {}\n'
-          'Final result of validation: {}'
-          .format(storm.date_start, storm.date_end, date_start, date_end, success),
-          print_to_stdout = False)
+    wwlln_logger.debug('Storm date range saved in Storm database: {} - {}\nStorm date range detected during testing: {} - {}\nFinal result of validation: {}'.format(storm.date_start, storm.date_end, date_start, date_end, success))
 
     return success
 
@@ -118,7 +114,7 @@ if (__name__ == '__main__'):
     globals__ = globals()
 
     try:
-        Debug('Start {}'.format(__file__), print_to_stdout = False)
+        wwlln_logger.info('Start {}'.format(__file__))
         #
         #storm     = globals__[ScriptParameterName.storm]
         #trackfile = globals__[ScriptParameterName.storm_trackfile]
@@ -135,8 +131,7 @@ if (__name__ == '__main__'):
         output_dir            = output_instances_list.path
         output_instances      = output_instances_list.files
 
-        Debug('Loaded global parameters:\n{}\n{}\n'.format(storm, output_dir, input_instances),
-              print_to_stdout = False)
+        wwlln_logger.debug('Loaded global parameters:\n{}\n{}\n'.format(storm, output_dir, input_instances))
 
         if (len(input_instances) > 1):
             raise ScriptError('Expected only 1 input file for recording Storm tracks, but we '
@@ -144,31 +139,30 @@ if (__name__ == '__main__'):
                               .format(len(input_instances), '\n'.join(input_instances)))
 
         success = validate_record_storm_tracks(storm, os.path.join(output_dir, input_instances[0]))
-        Debug('Validated the script: {}'.format('Success' if success else 'Failure'),
-              print_to_stdout = False)
+        wwlln_logger.info('Validated the script: {}'.format('Success' if success else 'Failure'))
 
         globals__[ScriptParameterName.success] = success
-        Debug('Completed script, returning now...', print_to_stdout = False)
+        wwlln_logger.info('Completed script, returning now...')
 
     except ScriptError as error:
-        Debug('ScriptError: {}'.format(error), print_to_stdout = True)
+        wwlln_logger.error('ScriptError: {}'.format(error))
         globals__[ScriptParameterName.success] = False
         globals__[ScriptParameterName.error]   = error
     except KeyError as error:
-        Debug('KeyError: {}'.format(error), print_to_stdout = True)
+        wwlln_logger.error('KeyError: {}'.format(error))
         error = ScriptError('Undefined required GLOBAL variable "{}"'
                             .format(error))
         globals__[ScriptParameterName.success] = False
         globals__[ScriptParameterName.error]   = error
     except NameError as error:
-        Debug('NameError: {}'.format(error), print_to_stdout = True)
+        wwlln_logger.error('NameError: {}'.format(error))
         error = ScriptError('Undefined required LOCAL variable "{}"'.format(error))
         globals__[ScriptParameterName.success] = False
         globals__[ScriptParameterName.error]   = error
     except:
         error_type    = sys.exc_info()[0]
         error_message = sys.exc_info()[1]
-        Debug('Unpredicted Error({}): {}'.format(error_type, error_message), print_to_stdout = True)
+        wwlln_logger.error('Unpredicted Error({}): {}'.format(error_type, error_message))
         error = ScriptError('Unexpected Error({}): "{}"'.format(error_type, error_message))
         globals__[ScriptParameterName.success] = False
         globals__[ScriptParameterName.error]   = error

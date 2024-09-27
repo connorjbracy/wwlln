@@ -5,10 +5,11 @@ import re
 
 from django.utils  import timezone
 
+from wwlln.scripts.custom_logging import wwlln_logger
 
 # Updates the track records for the given storm.
 def record_storm_tracks(storm, trackfile_filename):
-    print('Copying track records for {} to the database.'.format(storm))
+    wwlln_logger.info('Copying track records for {} to the database.'.format(storm))
     try:
         with open(trackfile_filename, 'rt') as track_records:
             # Extract each record of this storm from the track file.
@@ -31,7 +32,7 @@ def record_storm_tracks(storm, trackfile_filename):
                                     '\s+(\d+\.\d+)(\w)\s+(\w+)\s+(\d+)\s+(\d+)'),
                                     track_records.read())
     except IOError:
-        print('Failed to create/open: "{}"'.format(trackfile_filename))
+        wwlln_logger.error('Failed to create/open: "{}"'.format(trackfile_filename)))
         return False
 
     # The Navy edits their track files (removing/modifying some tracks in
@@ -109,7 +110,7 @@ if (__name__ == '__main__'):
         input_instances       = input_instances_lists[0].files
 
         if (len(input_instances) > 1):
-            print('Expected only 1 input file for recording Storm tracks, but we '
+            wwlln_logger.error('Expected only 1 input file for recording Storm tracks, but we '
                               'receieved the following {} files: {}\n'
                               .format(len(input_instances), '\n'.join(input_instances)))
             raise
@@ -119,19 +120,19 @@ if (__name__ == '__main__'):
         globals__[success] = success
 
     except KeyError as error:
-        print('KeyError: {}'.format(error))
+        wwlln_logger.error('KeyError: {}'.format(error)))
         error = KeyError('Undefined required GLOBAL variable "{}"'.format(error))
         globals__['success'] = False
         globals__[error]   = error
     except NameError as error:
-        print('NameError: {}'.format(error))
+        wwlln_logger.error('NameError: {}'.format(error)))
         error = NameError('Undefined required LOCAL variable "{}"'.format(error))
         globals__['success'] = False
         globals__[error]   = error
     except:
         error_type    = sys.exc_info()[0]
         error_message = sys.exc_info()[1]
-        print('Unpredicted Error({}): {}'.format(error_type, error_message))
+        wwlln_logger.error('Unpredicted Error({}): {}'.format(error_type, error_message)))
         error = ('Unexpected Error({}): "{}"'.format(error_type, error_message))
         globals__['success'] = False
         globals__[error]   = error
