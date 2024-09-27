@@ -4,7 +4,7 @@ from TCDataCollection.models import Resource
 from TCFrontEnd.models import Product
 from django.db.models import Q
 from TCDataProcessing.models import Storm
-from wwlln.scripts.custom_logging import _globalLogger
+from wwlln.scripts.custom_logging import wwlln_logger
 
 """
 Command called from the command line to update one or more(?) storm(s)
@@ -39,8 +39,7 @@ class Command(BaseCommand):
             update_all = options['u_all']
             update_sources = options['u_source']
 
-            _globalLogger.log_message("Beginning update with inputs: Region as {}, Season as {}, Storm as {}. FN: {} UA: {} US: {}"
-                .format(region, season_num, storm_num, find_new, update_all, update_sources), _globalLogger._DEBUG)
+            wwlln_logger.debug("Beginning update with inputs: Region as {}, Season as {}, Storm as {}. FN: {} UA: {} US: {}".format(region, season_num, storm_num, find_new, update_all, update_sources))
             
             if find_new:
                 storms.find_new_storms(region, season_num, storm_num)
@@ -60,10 +59,10 @@ class Command(BaseCommand):
                     storm_glob = Storm.objects.filter(is_complete=False)
             
             if storm_glob.count() == 0:
-                _globalLogger.log_message("No storms found when attempting to update", _globalLogger._DEBUG)
+                wwlln_logger.debug("No storms found when attempting to update")
                 return
             
-            _globalLogger.log_message("Attempting to update {storm_count} storms".format(storm_count=storm_glob.count()), _globalLogger._DEBUG)
+            wwlln_logger.debug("Attempting to update {storm_count} storms".format(storm_count=storm_glob.count()))
             if update_sources:
                 storms.update_storm_resources(storms=storm_glob)
             

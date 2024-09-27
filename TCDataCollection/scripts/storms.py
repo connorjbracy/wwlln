@@ -8,7 +8,7 @@ from TCDataProcessing.models import Storm, Mission, Sensor
 from TCDataProcessing.models import Sensor
 from TCDataProcessing.scripts.python.trackfile import TrackFile
 from TCFrontEnd.models import Product
-from wwlln.scripts.custom_logging import _globalLogger
+from wwlln.scripts.custom_logging import wwlln_logger
 
 
 _REGIONS_OLD = [ 'ATL', 'CPAC', 'EPAC', 'IO', 'SHEM', 'WPAC']
@@ -58,7 +58,7 @@ def find_new_storms(region=None, season_num=None,storm_num=None, date_range=None
                 if(not old_storms.filter(storm_number = cur_storm.storm_number).exists()):
                     cur_storm.save()
         else:
-            _globalLogger.log_message('invalid listdir entry found: {} with attempted regex string: {}'.format(storm,r'[a-zA-z]{2}\d{6}'), _globalLogger._ERROR)
+            wwlln_logger.error('invalid listdir entry found: {} with attempted regex string: {}'.format(storm,r'[a-zA-z]{2}\d{6}'))
             #print('invalid listdir entry found: {} with attempted regex string: {}'.format(storm,r'[a-zA-z]{2}\d{6}'))
 
 def update_storm_info(storm,dir):

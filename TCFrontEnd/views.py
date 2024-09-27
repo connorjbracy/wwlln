@@ -4,12 +4,12 @@ from django.shortcuts import get_object_or_404, render
 
 from TCFrontEnd.models import Product
 from TCDataProcessing.models import Storm
-from wwlln.scripts.custom_logging import _globalLogger
+from wwlln.scripts.custom_logging import wwlln_logger
 
 _REGIONS_NEW = ['AL',  'CP',   'EP',   'IO', 'SH',   'WP', 'LS']
 
 def index(request):
-    _globalLogger.log_message("Requesting to render TCFrontend/index.html", _globalLogger._DEBUG)
+    wwlln_logger.debug("Requesting to render TCFrontend/index.html")
     return render(request, 'TCFrontEnd/index.html', {'storms': Storm})
 
 def view_storm(request, season_num, region, storm_num):
@@ -18,7 +18,7 @@ def view_storm(request, season_num, region, storm_num):
                               region        = region,
                               storm_number  = storm_num)
 
-    _globalLogger.log_message("Requesting to view storm: {Storm_str}".format(Storm_str=storm), _globalLogger._INFO)
+    wwlln_logger.info("Requesting to view storm: {Storm_str}".format(Storm_str=storm))
 
     #products = Product.objects.filter(resource__source__per_storm = True)
     products = [product
@@ -40,7 +40,7 @@ def view_storm_group(request, season_num, region = None):
         query = (query & Q(region = region))
 
 
-    _globalLogger.log_message("Requesting to view a storm group with query: {Query_str}".format(Query_str=query), _globalLogger._INFO)
+    wwlln_logger.info("Requesting to view a storm group with query: {Query_str}".format(Query_str=query))
     # print(query, file = sys.stderr)
 
     season_list = Storm.get_season_range()
@@ -56,7 +56,7 @@ def view_storm_group(request, season_num, region = None):
                               { 'error_string': ('Season: {} - Region: {}'
                                                  .format(season_num, region)) })
         else:
-            _globalLogger.log_message("Page not found while viewing storm group with query: {Query_str}".format(Query_str=query), _globalLogger._ERROR)
+            wwlln_logger.error("Page not found while viewing storm group with query: {Query_str}".format(Query_str=query))
             raise Http404('<h1>Page not found</h1>')
 
     return render(request,
@@ -71,7 +71,7 @@ def view_storm_group(request, season_num, region = None):
 
 def search_view(request):
     search_string = request.GET.get('SearchInputBox')
-    _globalLogger.log_message("Attempting to search with search string: {Search_str}".format(Search_str=search_string), _globalLogger._INFO)
+    wwlln_logger.info("Attempting to search with search string: {Search_str}".format(Search_str=search_string))
     search_storms = Storm.storms_search_by_year_and_region(search_string)
     return render(request,
                   'storms/search_view.html',
