@@ -12,7 +12,7 @@ LOG_FULLFILE    = SESSION_LOG_DIR.joinpath(LOG_BASENAME)
 # Make sure the log directory eixsts
 SESSION_LOG_DIR.mkdir(parents = True, exist_ok = True)
 
-_formatter = logging.Formatter('{asctime} [{filename}({lineno}):{funcName}] {message}', style='{')
+_formatter = logging.Formatter('{asctime} [{filename}({lineno}):{funcName}] | {levelname:8} | {message}', style='{')
 
 # TODO: Check what the SESSION_TYPE is when running the server as a live server
 if ('server' in SESSION_TYPE.lower()):

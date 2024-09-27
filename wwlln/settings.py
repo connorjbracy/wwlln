@@ -10,11 +10,20 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-import wwlln.scripts.file_io as file_io
+import sys
+
+#import wwlln.scripts.file_io as file_io
+import pathlib
 import wwlln.credentials as credentials
 
+SESSION_TYPE = 'UNKNOWN'
+if (len(sys.argv) > 1):
+  SESSION_TYPE = sys.argv[1]
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = file_io.create_path(__file__).resolve().parent.parent
+BASE_DIR     = pathlib.Path(__file__).resolve().parent.parent
+#LOG_DIR      = BASE_DIR.joinpath('logs')
+#LOG_BASENAME = 'wwlln.log'
 
 UPDATE_SCRIPT_STATUS = 0
 
@@ -130,7 +139,8 @@ USE_TZ = True
 #STATIC_URL = '/static/'
 STATIC_URL = '/storms-test/static/' ### POTENTIAL FIX: For initial apache config
 
-STATIC_ROOT = file_io.create_path(BASE_DIR,'static/')
+#STATIC_ROOT = file_io.create_path(BASE_DIR,'static/')
+STATIC_ROOT = BASE_DIR.joinpath('static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

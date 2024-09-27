@@ -1,8 +1,11 @@
 import logging
-logging.getLogger('parso.python.diff').disabled = True
+#logging.getLogger('parso.python.diff').disabled = True
 import TCDataCollection.models as TCDC
 import TCDataProcessing.models as TCDP
 import TCFrontEnd.models       as TCFE
+from TCDataCollection.models import Source, Resource
+from TCDataProcessing.models import Storm, Mission, Sensor
+from TCFrontEnd.models       import Product
 
 from django.db import models
 
@@ -24,5 +27,5 @@ resources = TCDC.Resource.objects.all()
 res = resources[0]
 storm = TCDP.Storm.objects.all()[0]
 
-res.collect(storm=storm)
+#res.collect(storm=storm)
 
