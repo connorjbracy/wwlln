@@ -64,30 +64,42 @@ class TrackFile:
     
     def add(self, track):
         if isinstance(track,TrackEntry) and not track in self.tracks:
+            wwlln_logger.debug(f'add({track})')
             self.tracks.insert(0,track)
         elif isinstance(track, list):
+            wwlln_logger.debug(f'add(track = [...])')
             if isinstance(track[0],TrackEntry):
                 for entry in list:
                     self.add(entry)
             else:
-                raise ValueError('Unable to append list of given track types')
+                e_msg = 'Unable to append list of given track types'
+                wwlln_logger.error(e_msg)
+                raise ValueError(e_msg)
         else:
-            raise ValueError('Unable to append track of given type')
+            e_msg = 'Unable to append track of given type'
+            wwlln_logger.error(e_msg)
+            raise ValueError(e_msg)
 
     def parseNavyTrackFile(self, path=''):
         if path:
             #start file input
+            wwlln_logger.info('Parsing "{}"'.format(path))
             try:
                 with open(path, 'rt') as track_records:
                     navy_trackfile_re = re.compile('(\d{2}.)\s+(\w+(?:-\w+)?)\s+(\d{2})(\d{2})'
                                             '(\d{2})\s+(\d{2})(\d{2})\s+(\d+\.\d+)(\w)'
                                             '\s+(\d+\.\d+)(\w)\s+(\w+)\s+(\d+)\s+(\d+)')
                     track_records = re.findall(navy_trackfile_re, track_records.read())
+                    wwlln_logger.debug('{}:\npcre = {}\ntrack_records\n    {}'
+                                       .format(path, 
+                                               navy_trackfile_re,
+                                               '\n    '.join([str(tr) for tr in track_records])))
             except IOError:
-                wwlln_logger.error('Failed to create/open: "{}"'.format(path)))
+                wwlln_logger.error('Failed to create/open: "{}"'.format(path))
                 return False
             #end file input
-            for track in track_records:
+            for i_track, track in enumerate(track_records):
+                wwlln_logger.debug('{}:\ntrack #{} "{}"'.format(path, i_track, track))
                 year = max(int(track[2]),2000+int(track[2]))
                 time = timezone.datetime(year   = year,
                                     month  = int(track[3]),
@@ -125,7 +137,7 @@ class TrackFile:
                                           TWind     = track.wind))
             return self
         except IOError:
-            wwlln_logger.error('Failed to create/open: "{}"'.format(output_path)))
+            wwlln_logger.error('Failed to create/open: "{}"'.format(output_path))
     
     def get_start_date(self):
         return min(self.tracks, key=attrgetter('time')).time

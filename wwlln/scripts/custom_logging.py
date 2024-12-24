@@ -1,3 +1,4 @@
+from copy import deepcopy
 import datetime
 import logging
 import logging.handlers
@@ -9,10 +10,36 @@ SESSION_LOG_DIR = LOG_BASE_DIR.joinpath(SESSION_TYPE)
 LOG_BASENAME    = ('wwlln_{}.log'.format(SESSION_TYPE))
 LOG_FULLFILE    = SESSION_LOG_DIR.joinpath(LOG_BASENAME)
 
+##class WWLLNLogger(logging.Logger):
+##  def __init__(self, *args, **kwargs):
+##    super().__init__(*args, **kwargs)
+#
+#class WWLLNLogFormatter(logging.Formatter):
+#  def __init__(self, *args, **kwargs):
+#    super().__init__(*args, **kwargs)
+#    self._short_fmt = deepcopy(self._fmt)
+#
+#  def formatMessage(self, record):
+#    message_lines = record.msg.split('\n')
+#    if (len(message_lines) > 1):
+#      print('Format long message!!!')
+#    return super().formatMessage(record)
+
+
 # Make sure the log directory eixsts
 SESSION_LOG_DIR.mkdir(parents = True, exist_ok = True)
 
-_formatter = logging.Formatter('{asctime} [{filename}({lineno}):{funcName}] | {levelname:8} | {message}', style='{')
+#_log_line_width = 200
+_log_line_width = 135
+fn_log_line_divider = lambda character, width=_log_line_width: '\n{}\n'.format(width * character)
+#log_line_start = '\n{}\n'.format(log_line_width * '#')
+#log_msg_sep    = '\n{}\n'.format(log_line_width * '-')
+log_line_start = fn_log_line_divider('#')
+log_msg_sep    = fn_log_line_divider('-')
+#_formatter = logging.Formatter(log_line_start+'{asctime} [{pathname}({lineno}):{funcName}] | {levelname:8}'+log_msg_sep+'    {message}\n', style='{')
+#_formatter = logging.Formatter(log_line_start+'{asctime} | {levelname:8}\n[{pathname}({lineno}):{funcName}]'+log_msg_sep+'    {message}\n', style='{')
+_formatter = logging.Formatter(log_line_start+'{asctime} | {levelname:8}\n{pathname}({lineno})\n{funcName}'+log_msg_sep+'    {message}\n', style='{')
+#_formatter = WWLLNLogFormatter('{asctime} [{filename}({lineno}):{funcName}] | {levelname:8} | {message}', style='{')
 
 # TODO: Check what the SESSION_TYPE is when running the server as a live server
 if ('server' in SESSION_TYPE.lower()):

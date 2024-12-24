@@ -24,17 +24,17 @@ trackfile_navy_path      = urllib.parse.urljoin(navy_root, trackfile_path_rel_pa
 #
 #
 #url_navy_home =
-#url_navy_dir = 'https://www.nrlmry.navy.mil/TC/tc20/ATL/01L.ARTHUR/'
-#url_navy_txt = 'https://www.nrlmry.navy.mil/TC/tc20/ATL/01L.ARTHUR/trackfile.txt'
-#url_navy_img = 'https://www.nrlmry.navy.mil/TC/tc20/ATL/01L.ARTHUR/tc_ssmis/pct/20200513.1016.f16.x.pct.90LINVEST.25kts-1011mb-242N-807W.057pc.jpg'
-#url_navy_404 = 'https://www.nrlmry.navy.mil/TC/badaddress'
-#urls = [url_navy_home, url_navy_dir, url_navy_txt, url_navy_img, url_navy_404]
-#pages = {}
-#for url in urls:
-#    try:
-#        pages[url] = url_request.request_url_contents(url)
-#    except ConnectionError as e:
-#        wwlln_logger.error(e)
-#url = urls[0]
-#links = url_request.request_url_links(url)
-#
+url_navy_dir = 'https://www.nrlmry.navy.mil/TC/tc20/ATL/01L.ARTHUR/'
+url_navy_txt = 'https://www.nrlmry.navy.mil/TC/tc20/ATL/01L.ARTHUR/trackfile.txt'
+url_navy_img = 'https://www.nrlmry.navy.mil/TC/tc20/ATL/01L.ARTHUR/tc_ssmis/pct/20200513.1016.f16.x.pct.90LINVEST.25kts-1011mb-242N-807W.057pc.jpg'
+url_navy_404 = 'https://www.nrlmry.navy.mil/TC/badaddress'
+urls = [url_navy_home, url_navy_dir, url_navy_txt, url_navy_img, url_navy_404]
+pages = {}
+for url in urls:
+    try:
+        pages[url] = url_request.request_url_contents(url)
+    except ConnectionError as e:
+        wwlln_logger.error(e)
+url = urls[0]
+links = url_request.request_url_links(url)
+

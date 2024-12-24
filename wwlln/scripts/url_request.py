@@ -31,7 +31,8 @@ date_time_parse_patterns = ['%d-%b-%Y %H:%M', '%Y-%m-%d %H:%M']
 _HTML_PCRE_HREF_A = re.compile(r'(?<=\<a href=")(?P<href>.*?)(?=">(?P<txt>.*)</a>)')
 
 
-def request_url(url, username='', password = '', timeout=1, allow_redirects=True):
+def request_url(url, username='', password = '', timeout=10, allow_redirects=True):
+  wwlln_logger.info(str(locals()))
   # This seems to (maybe) intrinsically handle the 
   #   bad-URL -> redirect to 'oops' page -> return success issue?
   #   In [13]: b = requests.get('https://www.nrlmry.navy.mil/TC/badaddress')
@@ -44,11 +45,13 @@ def request_url(url, username='', password = '', timeout=1, allow_redirects=True
   #   MaxRetryError: HTTPConnectionPool(host='www.nrlmry.navy.mil', port=80): Max retries exceeded with url: /oops.html (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7df59cde4e48>: Failed to establish a new connection: [Errno 101] Network is unreachable',))
   #   ConnectionError               Traceback (most recent call last)
   #   ConnectionError: HTTPConnectionPool(host='www.nrlmry.navy.mil', port=80): Max retries exceeded with url: /oops.html (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7df59cde4e48>: Failed to establish a new connection: [Errno 101] Network is unreachable',))
+  wwlln_logger.debug(f'requests.get(url={url}, auth=(username={username}, password={password}), timeout={timeout}, allow_redirects={allow_redirects})')
   return requests.get(url, auth=(username, password), 
                       timeout=timeout, allow_redirects=allow_redirects)
 
 
 def request_url_contents(*args, decode=True, **kwargs):
+  wwlln_logger.info(str(locals()))
   req     = request_url(*args, **kwargs)
   content = req.content
   if (decode and req.apparent_encoding):
@@ -57,6 +60,7 @@ def request_url_contents(*args, decode=True, **kwargs):
 
 
 def request_url_links(*args, **kwargs):
+  wwlln_logger.info(str(locals()))
   global _HTML_PCRE_HREF_A
   contents = request_url_contents(*args, **kwargs)
   links    = _HTML_PCRE_HREF_A.findall(contents)
@@ -83,11 +87,13 @@ def request_url_links(*args, **kwargs):
 #      'last_modified': last_modified
 #      })
 def request_list_dir(*args, **kwargs):
+  wwlln_logger.info(str(locals()))
   #href_pattern = re.compile(r'(?<=\<a href=")(?P<dir>.*?)(?=">(?P=dir)</a>)')
   href_pattern = re.compile(r'(?<=\<a href=")(?P<href>.*)(?=">(?P<txt>.*)</a>)')
   #last_modified_pattern = re.compile('(?:'+')|(?:'.join(date_time_re_patterns)+')')
   contents = request_url_contents(*args, **kwargs)
   if (not contents):
+    wwlln_logger.warning('Found no directory contents!')
     return None
   #return href_pattern.findall(contents)
   #return ({'dirs': [href_match['txt'] for href_match in href_pattern.findall(contents)], 
@@ -95,6 +101,7 @@ def request_list_dir(*args, **kwargs):
   #         'last_modified': datetime.datetime.now()})
   dirs          = [href_match[1] for href_match in href_pattern.findall(contents)]
   last_modified = (len(dirs) * [datetime.datetime.now()])
+  wwlln_logger.warning('TODO: FIX - BLINDLY ADDING NOW() AS "LAST_MODIFIED"!!!')
   return {'dirs': dirs, 'last_modified': last_modified}
   #last_modified = last_modified_pattern.findall(contents)
   #for i in range(len(last_modified)):
@@ -109,6 +116,7 @@ def request_list_dir(*args, **kwargs):
   #    })
 
 def createURL(*urls):
+  wwlln_logger.info(str(locals()))
   urls=list(urls)
   for i in range(len(urls)):
       urls[i]=urls[i].strip('\\/')
